@@ -1,82 +1,58 @@
 #include <Adafruit_NeoPixel.h>
+#include <FastLED.h>
 
-struct RGB
-{
-  float red;
-  float green;
-  float blue;
-};
 
-RGB table[3];
+/********BASIC SETTINGS********/
 
 // the data pin for the NeoPixels
-int neoPixelPin = 6;
+#define DATA_PIN 6
 
-// How many NeoPixels we will be using, charge accordingly
-const int numPixels = 60;
+// How many LEDs we will be using, charge according to your needs
+#define NUM_LEDS 30
 
-// Instatiate the NeoPixel from the ibrary
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(numPixels, neoPixelPin, NEO_GRB + NEO_KHZ800);
+//time for a full loop in milliseconds. e.g : 5000ms is 5s.
+#define TIME_LOOP 15000
+
+//Section of the hue chart displayed on the LED strip.
+//Refer to the chart to adapt the section to your needs
+//hue chat : https://raw.githubusercontent.com/FastLED/FastLED/gh-pages/images/HSV-rainbow-with-desc.jpg
+#define SECTION_SIZE 20
+
+CRGB leds[NUM_LEDS];
 
 //time variable
-//unsigned long time;
-
-// a pre-processor macro
-#define DELAY_TIME (10)
-
-int timeLoop = 12500; //time for a full loop
-
+unsigned long time;
 
 void setup() {
-  strip.begin();  // initialize the strip
-  strip.show();   // make sure it is visible
-  strip.clear();  // Initialize all pixels to 'off'
+  FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
   //strip.setBrightness(40);
-  //Serial.begin(9600);
+  Serial.begin(9600);
 }
 
 void loop() {
   renderLEDs();
 }
 
-// Turns all the NeoPixels off
-void allOff() {
-  strip.clear();
-  strip.show();
-}
 
-// turn 1/3 of strip different colors. this is a crude, but effective way to do this.
 void renderLEDs() {
 
-  unsigned int time = millis();
-  unsigned int deltaT = time % timeLoop;
-  unsigned int deltaI = ((float)time / (float)timeLoop) * 255;
+  time = millis();
+  //difference in time
+  float deltaT = (float)(time%TIME_LOOP) / TIME_LOOP;
+  //difference in position on the hue chart
+  float deltaI = (deltaT*255);
 
-  for (int i = 0; i < numPixels; i++) {
+  for (int i = 0; i < NUM_LEDS; i++) {
 
-    int value = (int)(deltaI + (((float)i / (float)numPixels) * (255.0 / 15))) % 255;
-    strip.setPixelColor(numPixels - (i + 1), Wheel(value));
+    //value is determined by adding to deltA the the relative position of the LED
+    float value = deltaI+(((float)i/NUM_LEDS)*SECTION_SIZE);
+
+    leds[NUM_LEDS-(i+1)]= CHSV(value,255,255);
   }
-  strip.show();
+  FastLED.show();
 
 }
 
-
-
-// Input a value 0 to 255 to get a color value.
-// The colours are a transition r - g - b - back to r.
-uint32_t Wheel(byte WheelPos) {
-  WheelPos = 255 - WheelPos;
-  if (WheelPos < 85) {
-    return strip.Color(255 - WheelPos * 3, 0, WheelPos * 3);
-  } else if (WheelPos < 170) {
-    WheelPos -= 85;
-    return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
-  } else {
-    WheelPos -= 170;
-    return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
-  }
-}
 
 
 
