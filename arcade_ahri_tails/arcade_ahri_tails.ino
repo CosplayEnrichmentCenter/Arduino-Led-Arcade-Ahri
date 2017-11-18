@@ -10,7 +10,7 @@
 #define NUM_LEDS 60
 
 //time for a full loop in milliseconds. e.g : 5000ms is 5s.
-#define TIME_LOOP 7500
+#define TIME_LOOP 15000
 
 /* Section of the hue chart displayed on the LED strip.
  * Value must be between 0-255
