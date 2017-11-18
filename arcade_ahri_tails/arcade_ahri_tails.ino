@@ -1,4 +1,3 @@
-#include <Adafruit_NeoPixel.h>
 #include <FastLED.h>
 
 
@@ -8,15 +7,22 @@
 #define DATA_PIN 6
 
 // How many LEDs we will be using, charge according to your needs
-#define NUM_LEDS 30
+#define NUM_LEDS 60
 
 //time for a full loop in milliseconds. e.g : 5000ms is 5s.
-#define TIME_LOOP 15000
+#define TIME_LOOP 7500
 
-//Section of the hue chart displayed on the LED strip.
-//Refer to the chart to adapt the section to your needs
-//hue chat : https://raw.githubusercontent.com/FastLED/FastLED/gh-pages/images/HSV-rainbow-with-desc.jpg
-#define SECTION_SIZE 20
+/* Section of the hue chart displayed on the LED strip.
+ * Value must be between 0-255
+ * Refer to the chart to adapt the section to your needs
+ * Hue chart : https://raw.githubusercontent.com/FastLED/FastLED/gh-pages/images/HSV-rainbow-with-desc.jpg
+ * Interesting values : 
+ * 26 : Arcade Ahri
+ * 256 : Full rainbow
+ * 2048 : Just a pretty glowing, looks like something is living inside
+ */
+
+#define SECTION_SIZE 26
 
 CRGB leds[NUM_LEDS];
 
